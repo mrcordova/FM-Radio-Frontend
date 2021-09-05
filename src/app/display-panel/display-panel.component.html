@@ -1,0 +1,19 @@
+<div #box class="draggable"
+[style.width.px]="width"
+[style.height.px]="height"
+[style.transform]="'translate3d(' + left + 'px,' + top + 'px,' + '0px)'"
+[ngStyle]="{'zIndex': zIndex}"
+(mousedown)="onMouseClick($event)"
+(window:mouseup)="onMouseRelease($event)"
+>
+
+
+<div class="channelContainer">
+    <div id="currentChannel">
+        {{currentFreq?.nativeElement.textContent}}   
+    </div>  
+</div>
+
+</div>
+
+

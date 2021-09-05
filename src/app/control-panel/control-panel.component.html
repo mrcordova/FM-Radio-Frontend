@@ -1,0 +1,43 @@
+<div #box class="draggable"
+[style.width.px]="width"
+[style.height.px]="height"
+[style.transform]="'translate3d(' + left + 'px,' + top + 'px,' + '0px)'"
+[ngStyle]="{'zIndex': zIndex}"
+(mousedown)="onMouseClick($event)"
+(window:mouseup)="onMouseRelease($event)"
+>
+
+<div class="row">
+    <div class="col" id="controlContainer">
+        <div  class="slidecontainer">
+            <!-- 87.9 MHz to 107.9 MHz, step size = 200 kHz -->
+            <input #slider type="range" min="87.9" max="107.9" value="87.9" step="0.2" class="slider" id="myRange">
+            
+        </div>
+        <div class="sliderEnds">
+            <label>87.9 MHz</label>
+            <label>107.9 MHz</label>
+        </div>
+        <label id="channelsTitle">Preset Channels</label>
+        <div #channels class="channels">
+            <button value="" class="notSaveModeButton ">1</button>
+            <button value="" class="notSaveModeButton">2</button>
+            <button value="" class="notSaveModeButton">3</button>
+            <button value="" class="notSaveModeButton">4</button>
+            <button value="" class="notSaveModeButton">5</button>
+            <button value="" class="notSaveModeButton">6</button>
+        </div>
+        <button #save id="save" (click)="saveMode()">Set Channel</button>
+    </div>
+    <div  id="volContainer">
+      
+        <label id="volumeNumber" #volumeNumber>10</label>
+        <div #volumeKnob class="round-slider" id="volumeKnob">
+            <div  id="selection" class="selection" ></div>
+            <div id="holder" class="holder" style="color: hsl(120, 100%, 50%);"></div>
+        </div>
+        <label>Volume</label>
+    </div>    
+</div>
+
+</div>

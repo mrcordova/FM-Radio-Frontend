@@ -1,0 +1,29 @@
+.draggable {
+  outline: 1px dashed green;
+  top: 0;
+  left: 0;
+  height: max-content;
+  width: max-content;
+  z-index: 0;
+  position: absolute;
+}
+.draggable:hover {
+  cursor: pointer;
+}
+
+.channelContainer {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+}
+
+#currentChannel {
+  text-align: center;
+  user-select: none;
+  flex: 1;
+  font-size: 60px;
+  background-color: whitesmoke;
+}

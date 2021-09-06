@@ -49,6 +49,17 @@ export class DisplayPanelComponent implements OnInit, AfterViewInit {
     this.containerPos = { left, top, right, bottom };
   }
 
+  @HostListener('touchmove', ['$event'])
+  onTouchMove(event:TouchEvent){
+   
+   this.mouse = { x:event.targetTouches[0].clientX, y: event.targetTouches[0].clientY };
+    
+    if(this.drag){
+      this.left = this.mouseClick?.left! + (this.mouse.x - this.mouseClick?.x!);
+      this.top = this.mouseClick?.top! + (this.mouse.y - this.mouseClick?.y!);
+    }
+    
+  }
 
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(event: MouseEvent){
@@ -62,9 +73,26 @@ export class DisplayPanelComponent implements OnInit, AfterViewInit {
   }
 
 
+  @HostListener('touchend', ['$event'])
+ onTouchRelease(){
+   this.drag = false;
+ }
   onMouseRelease(event: MouseEvent) { 
     this.drag = false;
   }
+
+  @HostListener('touchstart', ['$event'])
+  onTouchStarts(event:TouchEvent){
+      this.drag = true;
+      this.mouseClick = { 
+        x: event.targetTouches[0].clientX, 
+        y: event.targetTouches[0].clientY, 
+        left: this.left!, 
+        top: this.top!
+     };
+   
+  }
+  
   onMouseClick(event: MouseEvent){
     
     this.drag = true;

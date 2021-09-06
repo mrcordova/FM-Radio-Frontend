@@ -34,7 +34,7 @@ export class ControlPanelComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(){
-    
+   
     
     let channels = this.channels!.nativeElement.children;
     for(let i = 0; i < channels.length; i++){
@@ -59,6 +59,15 @@ export class ControlPanelComponent implements OnInit, AfterViewInit{
     this.loadContainer();
     this.volumeKnob!.nativeElement.addEventListener("click", this.volumeTune );
 
+
+    this.volumeKnob!.nativeElement.addEventListener('touchstart', (event: MouseEvent) => {
+
+      this.volumeKnob!.nativeElement.ontouchmove = (event:TouchEvent) =>  {
+
+        this.volumeTune(event)
+        
+      }
+    })
     this.volumeKnob!.nativeElement.addEventListener('mousedown', (event: MouseEvent) => {
 
       this.volumeKnob!.nativeElement.onmousemove = (event: MouseEvent) =>  {
@@ -73,12 +82,19 @@ export class ControlPanelComponent implements OnInit, AfterViewInit{
     
   }
 
-  volumeTune(event: MouseEvent){
+  volumeTune(event:any){
     let element = event.target as HTMLElement;
    
     let eventDoc = (element && element.ownerDocument) || document, doc = eventDoc.documentElement, body = eventDoc.body;
 
-    
+  let posX, posY;
+  if ((event.pageX)&&(event.pageY)) {
+    posX = event.pageX;
+    posY = event.pageY;
+    } else if (event.targetTouches) {
+    posX = event.targetTouches[0].pageX;
+    posY = event.targetTouches[0].pageY;
+    }
 
 	let output = document.getElementById('selection') as HTMLDivElement,
 		text = document.getElementById('volumeNumber') as HTMLLabelElement,
@@ -86,8 +102,8 @@ export class ControlPanelComponent implements OnInit, AfterViewInit{
 		elpos = element.getBoundingClientRect(),
 		cX = elpos.width / 2,
 		cY = elpos.height / 2,
-		eX = event.pageX- elpos.left,
-		eY = event.pageY - elpos.top,
+		eX = posX- elpos.left,
+		eY = posY - elpos.top,
 		dX = 0,
 		dY = 0,
 		angle = Math.atan2(cX - eX, cY - eY) * (180 / Math.PI),
@@ -145,7 +161,17 @@ export class ControlPanelComponent implements OnInit, AfterViewInit{
     this.containerPos = { left, top, right, bottom };
   }
 
-
+  @HostListener('touchmove', ['$event'])
+  onTouchMove(event:TouchEvent){
+   
+   this.mouse = { x:event.targetTouches[0].clientX, y: event.targetTouches[0].clientY };
+    
+    if(this.drag){
+      this.left = this.mouseClick?.left! + (this.mouse.x - this.mouseClick?.x!);
+      this.top = this.mouseClick?.top! + (this.mouse.y - this.mouseClick?.y!);
+    }
+    
+  }
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(event: MouseEvent){
     this.mouse = { x: event.clientX, y: event.clientY };
@@ -157,7 +183,27 @@ export class ControlPanelComponent implements OnInit, AfterViewInit{
     
   }
 
- 
+  @HostListener('touchstart', ['$event'])
+  onTouchStarts(event:TouchEvent){
+    let slider = document.getElementById('myRange');
+    let volumeKnob = document.getElementById('volumeKnob');
+
+  
+    if(!(slider === event.target) && !(volumeKnob === event.target)){
+      this.drag = true;
+      this.mouseClick = { 
+        x: event.targetTouches[0].clientX, 
+        y: event.targetTouches[0].clientY, 
+        left: this.left!, 
+        top: this.top!
+     };
+    }
+  }
+
+  @HostListener('touchend', ['$event'])
+ onTouchRelease(){
+   this.drag = false;
+ }
 
   onMouseRelease(event: MouseEvent) { 
     this.drag = false;

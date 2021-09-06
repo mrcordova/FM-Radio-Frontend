@@ -61,6 +61,23 @@ ngOnDestroy(){
   this.stopListening();
 }
   
+
+ @HostListener('touchstart', ['$event'])
+ onTouchClick(event: TouchEvent){
+  const topPanel = 1000;
+  const bottomPanel = 0;
+  
+  this.setPos();
+  
+  if(this.displayPanel?.box?.nativeElement.contains(event.target)){
+    this.displayPanel?.updateZindex(topPanel);
+    this.controlPanel?.updateZindex(bottomPanel);
+    
+  } else if (this.controlPanel?.box?.nativeElement.contains(event.target)){
+    this.displayPanel?.updateZindex(bottomPanel);
+    this.controlPanel?.updateZindex(topPanel);
+  }
+ }
   @HostListener('mousedown', ['$event'])
   onMouseClick(event : MouseEvent){
     const topPanel = 1000;
@@ -79,6 +96,21 @@ ngOnDestroy(){
   }
 
 
+  @HostListener('touchend', ['$event'])
+  onTouchMove(){
+    const displayBox = this.displayPanel?.box!.nativeElement.getBoundingClientRect();
+    const controlBox = this.controlPanel?.box!.nativeElement.getBoundingClientRect();
+  
+
+    if(displayBox.top + displayBox.height > controlBox.top
+      && displayBox.left + displayBox.width > controlBox.left
+      && displayBox.bottom - displayBox.height < controlBox.bottom
+      && displayBox.right - displayBox.width < controlBox.right) {
+       
+        this.swapPos();
+        
+      } 
+  }
   @HostListener('mouseup', ['$event'])
   onMouseMove(event: MouseEvent){
   
